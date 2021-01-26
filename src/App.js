@@ -1,6 +1,122 @@
 import React, { useState, useEffect, useRef } from "react";
 
 
+
+// usePreventLeave 와 useConfirm 은 useEffect 와 useState 를 사용하지 않기 때문에 엄밀히 말하면 hook 은 아니다.
+// isPreventLeave (보통 웹사이트에서 볼 수 있는데 창 닫으려고 할 때 아직 저장하지 않았다고 알려주거나 할 떼)
+
+const usePreventLeave = () => {
+  const enablePrevent = () => window.addEventListener("")  
+  const disbalePrevent = () => window.addEventListener("")
+};
+const App = () => {
+  return (
+    <div className="App">
+      <button onClick={confirmDelete}>Delete the World</button>
+    </div>
+  )
+};
+
+// usePreventLeave 와 useConfirm 은 useEffect 와 useState 를 사용하지 않기 때문에 엄밀히 말하면 hook 은 아니다.
+// useConfirm (보통 사용자가 무언가를 하기 전에 확인하는 것 - ex) 버튼을 클릭하면 이벤트 실행 전에 메시지 보여주기)
+/*
+const useConfirm = (message="", callback, rejection) => {
+  const confirmAction = () => {
+    if(window.confirm(message)) { // confrim function 이 browser 에 message 를 가지고 있다면 callback 을 호출한다
+      callback();
+    } else {
+      rejection();
+    }
+  } 
+  return confirmAction; // App 의 confirmDelete는 리턴된 confirmAction이고 우리가 confirmAction 을 부르면 브라우저에 있는 confirm 에 갈거고 그게 true면 callback이 실행되면서 deleteWorld가 실행되는 것
+
+  if(typeof callback !== "function") {
+    return;
+  }
+};
+const App = () => {
+  const deleteWorld= () => console.log("Deleting the World..");
+  const abort = () => console.log("Aborted");
+  const confirmDelete = useConfirm("Are you sure?", deleteWorld, abort);
+  return (
+    <div className="App">
+      <button onClick={confirmDelete}>Delete the World</button>
+    </div>
+  )
+};
+*/
+
+
+// useHover
+/*
+const useHover = onHover => {
+  const element = useRef();
+  useEffect(() => {
+    if(element.current) {
+      element.current.addEventListener("mouseenter", onHover)
+    }
+    return () => {
+      if(element.current) {
+      element.current.removeEventListener("mouseenter", onHover)
+      }
+    }
+  }, [])
+  if(typeof onHover !== "function") { 
+    return; 
+  }
+  return element;
+};
+const App = () => {
+  const sayHello = () => console.log("say hello");
+  const title = useHover(sayHello);
+  return (
+    <div>
+      <h1 ref={title}>Hi</h1>
+    </div>
+  );
+};
+*/
+
+
+// useClick (useRef 를 이용한)
+/*
+const useClick = (onClick) => {
+  const element = useRef();
+  useEffect(() => {
+    // useEffect 안에 function을 넣으면 이 function은 componentDidMount, componentDidUpdate 때 호출된다 (dependency가 없다면)
+    // 만약 dependency가 있다면 componentDidMount 때만 이 function은 호출된다
+    // component 가 mount 되었을 때 addEventListener 를 추가하고 dependency가 없으니 한번만 추가되고 dependency가 있다면 update 될 때마다 이벤트리스너가 추가됨
+    if(element.current) {
+      element.current.addEventListener("click", onClick)
+    }
+    // useEffect 를 return 받은 함수는 componentWillUnMount 때 실행된다
+    // component 가 mount 되지 않았을 때 eventListener 가 배치되길 원하지 않기 때문에 사용한다!
+    return () => {
+      if(element.current) {
+      element.current.removeEventListener("click", onClick)
+      }
+    }
+  }, [])
+  if(typeof onClick !== "function") { 
+    return;  // onClick의 타입이 함수가 아니면 아무것도 반환하지 않음. 텅 빈 함수가 되므로 아무 일도 발생하지 않는다.
+  }
+  return element;
+}
+const App = () => {
+  //const sayHi = "string" // 얘는 함수가 아니라서 useClick 이 작동 안 함
+  const sayHello = () => console.log("say hello");
+  const title = useClick(sayHello);
+  return (
+    <div>
+      <h1 ref={title}>Hi</h1>
+    </div>
+  );
+};
+*/
+
+
+// useRef
+/*
 const App = () => {
   //reference 는 컴포넌의 어떤 부분을 선택할 수 있는 방법이다. document.getElementByID()를 사용하는 것과 비슷하다.
   //react에 있는 모든 컴포넌트는 reference element 를 가지고 있다
@@ -14,6 +130,8 @@ const App = () => {
     </div>
   ) // input 태그에게 inputR 을 참조하라고 하는 것!
 }
+*/
+
 
 // useTtile
 /*
@@ -42,9 +160,9 @@ const App = () => {
 /*
 const App = () => {
   const sayHello = () => console.log("Hello");
-  useEffect(() => { 
-    sayHello();
-  });
+  //useEffect(() => { 
+  //  sayHello();
+  //});
   // useEffect 는 componentDidmount 의 역할을 하기때문에 새로고침 하면 sayHello를 실행하고, componentDidUpdate의 역할도 하기때문에 버튼을 클릭하면 sayHello를 실행한다
   // useEffect 는 componentDidmount, componentWillUnMount, componentDidUpdate 이다!
   // useEffect 는 2개의 인자를 받는데 첫번째는 function으로서의 effect => 그래서 아래처럼 할 수도 있따
